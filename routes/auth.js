@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var redisClient = require('redis').createClient();
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+var authProvider = require('../business_logic/auth_provider');
+var Q = require('q');
 
 /*
   Attempt to use third party credentials log in system, returns a JWT object if succeed.
@@ -15,9 +12,9 @@ router.get('/', function(req, res, next) {
     <1> one of the following: "wx", "qq", "alipay"
   Response:
     A JWT object access token.
-    In payload: { "sub": UID in our system, "name": user name, "roles": array of all roles granted to the user, "exp": token expiration date }
+    In payload: { "jti":identifier for this token, "sub": UID in our system, "name": user name, "scopes": array of all roles granted to the user, "exp": token expiration date }
 */
-router.get('/auth/login/thirdparty', function(req, res, next) {
+router.get('/login/thirdparty', function (req, res, next) {
 
 });
 
@@ -27,9 +24,9 @@ router.get('/auth/login/thirdparty', function(req, res, next) {
     JSON object: { "user_name": user name in the system, "password_md5": the hash value of the password }
   Response:
     A JWT object access token.
-    In payload: { "sub": UID in our system, "name": user name, "roles": array of all roles granted to the user, "exp": token expiration date }
+    In payload: { "jti":identifier for this token, "sub": UID in our system, "name": user name, "scopes": array of all roles granted to the user, "exp": token expiration date }
 */
-router.get('/auth/login', function(req, res, next) {
+router.get('/login', function (req, res, next) {
 
 });
 
@@ -40,10 +37,18 @@ router.get('/auth/login', function(req, res, next) {
   Response:
     Status code 200 or 403.
 */
-router.get('/auth/logout', function(req, res, next) {
+router.get('/logout', function (req, res, next) {
 
 });
 
-
+router.get('/decode/:token', function (req, res, next) {
+  authProvider.verifyTokenAsync(req.params.token)
+  .then(function (payload) {
+    res.send(payload);
+  })
+  .fail(function (error) {
+    res.send(error);
+  });
+});
 
 module.exports = router;

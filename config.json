@@ -1,0 +1,9 @@
+{
+    "tokenConfiguration": {
+        "privateKey": "*cf93d4833ec2f552c2c4ae3e81b85e5a*",
+        "supportedAlgorithms": [
+            "HS256"
+        ],
+        "defaultAliveTime": "24h"
+    }
+}
